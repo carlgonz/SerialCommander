@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>782</width>
+    <height>569</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QGroupBox" name="groupConexion">
+      <property name="title">
+       <string>Conexión</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comboBoxPorts"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labePort">
+         <property name="text">
+          <string>Puerto</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="comboBoxBaudrate"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="pushButtonOpenPort">
+         <property name="text">
+          <string>Cerrar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="pushButtonClosePort">
+         <property name="text">
+          <string>Abrir</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelBaudrate">
+         <property name="text">
+          <string>Tasa de datos</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QGroupBox" name="groupBoxTelemetria">
+      <property name="title">
+       <string>Telemetría</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Detener</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>Enviar TM</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="text">
+          <string>Enviar Estado</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLineEdit" name="lineEdit_5"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QPushButton" name="pushButton_5">
+         <property name="text">
+          <string>Cargar TM</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="text">
+          <string>Enviar Idle</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+       <item row="2" column="4">
+        <widget class="QLineEdit" name="lineEdit_4"/>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLineEdit" name="lineEdit_2"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="labelBeaconStatus_2">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(195, 195, 195);
+alternate-background-color: rgb(0, 204, 102);</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Transmitiendo</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QPushButton" name="pushButton_6">
+         <property name="text">
+          <string>P. Entrada</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="text">
+          <string>P. Salida</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLabel" name="label">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Contador</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="pushButton_8">
+         <property name="text">
+          <string>Potencia</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="4">
+        <widget class="QLineEdit" name="lineEdit_3"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QGroupBox" name="groupBoxBeacon">
+      <property name="title">
+       <string>Beacon</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="2">
+        <widget class="QLabel" name="labelBeaconStatus">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(195, 195, 195);
+alternate-background-color: rgb(0, 204, 102);</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Transmitiendo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="pushButtonBeaconSend">
+         <property name="text">
+          <string>Enviar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="7">
+        <widget class="QLineEdit" name="lineEditPeriod"/>
+       </item>
+       <item row="0" column="5">
+        <widget class="QPushButton" name="pushButtonPeriod">
+         <property name="text">
+          <string>Periodo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLineEdit" name="lineEditBeaconPwr"/>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="pushButtonBeaconPwr">
+         <property name="text">
+          <string>Potencia</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="7">
+        <widget class="QLineEdit" name="lineEditBeaconWPM"/>
+       </item>
+       <item row="2" column="5">
+        <widget class="QPushButton" name="pushButtonBeaconWPM">
+         <property name="text">
+          <string>PPM</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="pushButtonBeaconSet">
+         <property name="text">
+          <string>Actualizar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" colspan="5">
+        <widget class="QLineEdit" name="lineEditBeaconSet">
+         <property name="maxLength">
+          <number>256</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QGroupBox" name="groupBoxTelecomandos">
+      <property name="title">
+       <string>Telecomandos</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="2" column="2">
+        <widget class="QCheckBox" name="checkBox">
+         <property name="text">
+          <string>ASCII</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="pushButton_12">
+         <property name="text">
+          <string>P. Entrada</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="pushButton_9">
+         <property name="text">
+          <string>Leer TC</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelBeaconStatus_4">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(195, 195, 195);
+alternate-background-color: rgb(0, 204, 102);</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Leyendo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="5">
+        <widget class="QListWidget" name="listWidget"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelBeaconStatus_3">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(195, 195, 195);
+alternate-background-color: rgb(0, 204, 102);</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string>Recibiendo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLineEdit" name="lineEdit_6"/>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLineEdit" name="lineEdit_7"/>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="pushButton_11">
+         <property name="text">
+          <string>P. Salida</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QPushButton" name="pushButton_10">
+         <property name="text">
+          <string>Limpiar</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+      <zorder>groupBoxEstado</zorder>
+      <zorder>listWidget</zorder>
+      <zorder>pushButton_9</zorder>
+      <zorder>labelBeaconStatus_3</zorder>
+      <zorder>labelBeaconStatus_4</zorder>
+      <zorder>lineEdit_6</zorder>
+      <zorder>lineEdit_7</zorder>
+      <zorder>pushButton_11</zorder>
+      <zorder>pushButton_12</zorder>
+      <zorder>checkBox</zorder>
+      <zorder>pushButton_10</zorder>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGroupBox" name="groupBoxEstado">
+      <property name="title">
+       <string>Estado</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="3">
+        <widget class="QComboBox" name="comboBox"/>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="pushButton_13">
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>782</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArchivo">
+    <property name="title">
+     <string>Archivo</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHerramientas">
+    <property name="title">
+     <string>Herramientas</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAyuda">
+    <property name="title">
+     <string>Ayuda</string>
+    </property>
+   </widget>
+   <addaction name="menuArchivo"/>
+   <addaction name="menuHerramientas"/>
+   <addaction name="menuAyuda"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,11 @@
+trx_send_beacon
+trx_read_reg <registro>
+trx_tm <funcion>
+trx_getstatustrx_set_beacon [<text>]
+trx_set_mode <mode>
+trx_set_tm_pwr <pwr>
+trx_set_bc_pwr <pwr>
+trx_read_tc_frame
+trx_write_reg <reg> <val>
+new_cmd
+rtc_print
