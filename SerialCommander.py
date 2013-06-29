@@ -55,6 +55,8 @@ class SerialCommander(QtGui.QMainWindow):
         self.receiver_thread = None
         self.commands_file = "config/cmd_list.lst"
         self.commands_list = []
+        self.history = []
+        self.history_cnt = 0
                 
         #Configurar ventana
         self.ventana = Ui_MainWindow()
@@ -187,6 +189,8 @@ class SerialCommander(QtGui.QMainWindow):
         Envia la linea escrita por el puerto serial
         '''
         msg = str(self.ventana.lineEditSend.text())
+        self.addHistory(msg)
+        
         #Agregar LF y/o CR
         if(self.ventana.checkBoxLF.isChecked()):
             msg +='\n'
@@ -195,6 +199,7 @@ class SerialCommander(QtGui.QMainWindow):
         
         self.SerialComm.write(unicode(msg))
         self.ventana.lineEditSend.clear()
+        self.history_cnt = 0
         
     def save_log(self):
         '''
@@ -228,6 +233,42 @@ class SerialCommander(QtGui.QMainWindow):
                 self.alive = False
                 raise
             
+    def addHistory(self, line):
+        '''
+        Agrega una nueva linea al historial. Elimina entradas antiguas si supera
+        cierta cantidad de mensajes.
+        '''
+        if len(self.history) > 100:
+            self.history.pop()
+        
+        try:
+            if not (line == self.history[-1]):
+                self.history.append(line)
+        except:
+            self.history.append(line)
+            
+    def getHistory(self, index):
+        '''
+        Retorna el elemendo numero index del historial
+        '''
+        if index > 0 and index <= len(self.history):
+            return self.history[-index]
+        else:
+            return ''
+    
+    def historySend(self):
+        '''
+        Agrega una linea del historial para ser enviada
+        '''
+        if self.history_cnt >= 0:
+            if self.history_cnt > len(self.history):
+                self.history_cnt = len(self.history)
+                
+            text = self.getHistory(self.history_cnt)
+            self.ventana.lineEditSend.setText(text)
+        else:
+            self.history_cnt = 0                
+            
     def closeEvent(self, event):
         '''
         Cierra la aplicacion correctamente. Cerrar los puertos, detener thread
@@ -240,6 +281,23 @@ class SerialCommander(QtGui.QMainWindow):
             file_cmd.write(line+'\n')
         file_cmd.close()
         event.accept()
+        
+    def keyPressEvent(self, event):
+        '''
+        Maneja eventos asociados a teclas presionadas
+        '''
+        if event.key() == QtCore.Qt.Key_Up:
+            if self.ventana.lineEditSend.hasFocus():
+                self.history_cnt+=1
+                self.historySend()
+        
+        if event.key() == QtCore.Qt.Key_Down:
+            if self.ventana.lineEditSend.hasFocus():
+                self.history_cnt-=1
+                self.historySend()
+            
+        event.accept()
+        
             
 class EditCommandDialog(QtGui.QDialog):
     '''
