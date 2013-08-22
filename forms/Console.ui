@@ -113,7 +113,7 @@
         <item>
          <widget class="QGroupBox" name="groupBoxRepetir">
           <property name="title">
-           <string>Repetir</string>
+           <string>Opciones</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="1" column="0">
@@ -136,6 +136,13 @@
             <widget class="QCheckBox" name="checkBox">
              <property name="text">
               <string>Modo continuo</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="checkBoxTimestamp">
+             <property name="text">
+              <string>Agregar marca de tiempo</string>
              </property>
             </widget>
            </item>
@@ -242,7 +249,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
@@ -374,12 +381,12 @@
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>273</y>
+     <x>391</x>
+     <y>323</y>
     </hint>
     <hint type="destinationlabel">
-     <x>581</x>
-     <y>271</y>
+     <x>630</x>
+     <y>326</y>
     </hint>
    </hints>
   </connection>

@@ -22,6 +22,7 @@
 import sys
 import threading
 import time
+import datetime
 import serial
 from serial.tools.list_ports import comports as listports
 from serial.tools.list_ports import grep as listports_grep
@@ -57,6 +58,8 @@ class SerialCommander(QtGui.QMainWindow):
         self.commands_list = []
         self.history = []
         self.history_cnt = 0
+        self.timestamp = False
+        self.put_timestamp = True
                 
         #Configurar ventana
         self.ventana = Ui_MainWindow()
@@ -108,6 +111,13 @@ class SerialCommander(QtGui.QMainWindow):
         #Conexiones
         self.ventana.listWidgetCommand.itemDoubleClicked.connect(self.command_clicked)
         self.ventana.pushButtonSend.clicked.connect(self.send_msg)
+        self.ventana.checkBoxTimestamp.toggled.connect(self.timestamp_toggle)
+    
+    def timestamp_toggle(self, value):
+        '''
+        Slot que intercambia entre agregar o no la marca de tiempo
+        '''
+        self.timestamp = value
     
     def setup_actions(self):
         '''
@@ -129,10 +139,34 @@ class SerialCommander(QtGui.QMainWindow):
     
     def write_terminal(self, text):
         '''
-        Escribe el texto en el widget de lectura y configura el
-        cursor hasta el final de cocumento
+        Escribe el texto en el widget de lectura, configura el
+        cursor hasta el final de cocumento y agrega marca de tiempo
         '''
-        self.ventana.textEditTerminal.insertPlainText(text)
+        if self.timestamp:
+            #Modo Timestamp, busca nueva linea para agregar timestamp
+            if self.put_timestamp:
+                #Agregar la marca de tiempo si corresponde
+                ts = datetime.datetime.now().isoformat(' ')
+                ts = '[{0}] '.format(ts)
+                self.ventana.textEditTerminal.insertPlainText(ts)
+                self.put_timestamp = False
+            
+            #Buscar si hay nueva linea para agregar marca despues
+            lines = unicode(text).split('\n',1)
+            text = lines[0]
+            self.ventana.textEditTerminal.insertPlainText(text)
+            
+            #Seguir procesando el resto de la linea
+            if len(lines) > 1:
+                self.put_timestamp = True
+                if lines[1] != '':
+                    write_terminal(lines[1])
+                else:
+                    self.ventana.textEditTerminal.insertPlainText('\n')
+        else:
+            #Modo normal, solo escribir todo por consola
+            self.ventana.textEditTerminal.insertPlainText(text)
+        
         #Mover el cursor al final de documento
         c =  self.ventana.textEditTerminal.textCursor()
         c.movePosition(QTextCursor.End)
@@ -227,7 +261,8 @@ class SerialCommander(QtGui.QMainWindow):
                         self._new_char.emit(data)
             
             except UnicodeDecodeError, e:
-                print e
+                #print e
+                pass
                     
             except serial.SerialException, e:
                 self.alive = False
