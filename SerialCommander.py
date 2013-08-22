@@ -142,6 +142,9 @@ class SerialCommander(QtGui.QMainWindow):
         Escribe el texto en el widget de lectura, configura el
         cursor hasta el final de cocumento y agrega marca de tiempo
         '''
+        
+        text = text.replace('\r','')
+        
         if self.timestamp:
             #Modo Timestamp, busca nueva linea para agregar timestamp
             if self.put_timestamp:
@@ -160,7 +163,7 @@ class SerialCommander(QtGui.QMainWindow):
             if len(lines) > 1:
                 self.put_timestamp = True
                 if lines[1] != '':
-                    write_terminal(lines[1])
+                    self.write_terminal(lines[1])
                 else:
                     self.ventana.textEditTerminal.insertPlainText('\n')
         else:
