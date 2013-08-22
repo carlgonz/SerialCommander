@@ -242,7 +242,7 @@ class SerialCommander(QtGui.QMainWindow):
         Guarda el contenido de la ventana de log a un archivo
         '''
         #Ventana crear un archivo
-        doc_file = QFileDialog.getOpenFileName(self, "Guardar archivo", QDir.currentPath(), "Archivos de texto (*.txt);;All files (*.*)")
+        doc_file = QFileDialog.getSaveFileName(self, "Guardar archivo", QDir.currentPath(), "Archivos de texto (*.txt);;All files (*.*)")
         doc_file = str(doc_file)
         document = self.ventana.textEditTerminal.document()
         m_write = QTextDocumentWriter()
