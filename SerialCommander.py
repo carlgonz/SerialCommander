@@ -150,7 +150,7 @@ class SerialCommander(QtGui.QMainWindow):
             if self.put_timestamp:
                 #Agregar la marca de tiempo si corresponde
                 ts = datetime.datetime.now().isoformat(' ')
-                ts = '[{0}] '.format(ts)
+                ts = '\n[{0}] '.format(ts)
                 self.ventana.textEditTerminal.insertPlainText(ts)
                 self.put_timestamp = False
             
@@ -164,8 +164,7 @@ class SerialCommander(QtGui.QMainWindow):
                 self.put_timestamp = True
                 if lines[1] != '':
                     self.write_terminal(lines[1])
-                else:
-                    self.ventana.textEditTerminal.insertPlainText('\n')
+                    
         else:
             #Modo normal, solo escribir todo por consola
             self.ventana.textEditTerminal.insertPlainText(text)

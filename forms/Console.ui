@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>480</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -116,8 +116,11 @@
            <string>Opciones</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="labelPeriod">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Periodo</string>
              </property>
@@ -129,17 +132,27 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QSpinBox" name="spinBoxPeriod"/>
-           </item>
-           <item row="0" column="0" colspan="2">
+           <item row="2" column="0" colspan="2">
             <widget class="QCheckBox" name="checkBox">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Modo continuo</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="0" colspan="2">
+           <item row="3" column="1">
+            <widget class="QSpinBox" name="spinBoxPeriod">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="suffix">
+              <string> [s]</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
             <widget class="QCheckBox" name="checkBoxTimestamp">
              <property name="text">
               <string>Agregar marca de tiempo</string>
@@ -337,7 +350,6 @@
   <tabstop>checkBoxLF</tabstop>
   <tabstop>checkBoxCR</tabstop>
   <tabstop>checkBox</tabstop>
-  <tabstop>spinBoxPeriod</tabstop>
   <tabstop>textEditTerminal</tabstop>
  </tabstops>
  <resources/>

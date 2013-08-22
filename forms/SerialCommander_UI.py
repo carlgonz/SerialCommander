@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Console.ui'
 #
-# Created: Thu Aug 22 00:56:00 2013
+# Created: Thu Aug 22 12:35:54 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(640, 480)
+        MainWindow.resize(640, 492)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../../../../../../../home/carlos/Eléctrica/CubeSat/PIC24FJ256GA110_EXT/TRANSCEIVER/branches/trx-v3/GUI/icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -84,18 +84,21 @@ class Ui_MainWindow(object):
         self.gridLayout_3 = QtGui.QGridLayout(self.groupBoxRepetir)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
         self.labelPeriod = QtGui.QLabel(self.groupBoxRepetir)
+        self.labelPeriod.setEnabled(False)
         self.labelPeriod.setAlignment(QtCore.Qt.AlignCenter)
         self.labelPeriod.setObjectName(_fromUtf8("labelPeriod"))
-        self.gridLayout_3.addWidget(self.labelPeriod, 1, 0, 1, 1)
-        self.spinBoxPeriod = QtGui.QSpinBox(self.groupBoxRepetir)
-        self.spinBoxPeriod.setObjectName(_fromUtf8("spinBoxPeriod"))
-        self.gridLayout_3.addWidget(self.spinBoxPeriod, 1, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.labelPeriod, 3, 0, 1, 1)
         self.checkBox = QtGui.QCheckBox(self.groupBoxRepetir)
+        self.checkBox.setEnabled(False)
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
-        self.gridLayout_3.addWidget(self.checkBox, 0, 0, 1, 2)
+        self.gridLayout_3.addWidget(self.checkBox, 2, 0, 1, 2)
+        self.spinBoxPeriod = QtGui.QSpinBox(self.groupBoxRepetir)
+        self.spinBoxPeriod.setEnabled(False)
+        self.spinBoxPeriod.setObjectName(_fromUtf8("spinBoxPeriod"))
+        self.gridLayout_3.addWidget(self.spinBoxPeriod, 3, 1, 1, 1)
         self.checkBoxTimestamp = QtGui.QCheckBox(self.groupBoxRepetir)
         self.checkBoxTimestamp.setObjectName(_fromUtf8("checkBoxTimestamp"))
-        self.gridLayout_3.addWidget(self.checkBoxTimestamp, 2, 0, 1, 2)
+        self.gridLayout_3.addWidget(self.checkBoxTimestamp, 1, 0, 1, 2)
         self.verticalLayout_2.addWidget(self.groupBoxRepetir)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
         self.groupBoxCommand = QtGui.QGroupBox(self.centralwidget)
@@ -193,8 +196,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.pushButtonSend, self.checkBoxLF)
         MainWindow.setTabOrder(self.checkBoxLF, self.checkBoxCR)
         MainWindow.setTabOrder(self.checkBoxCR, self.checkBox)
-        MainWindow.setTabOrder(self.checkBox, self.spinBoxPeriod)
-        MainWindow.setTabOrder(self.spinBoxPeriod, self.textEditTerminal)
+        MainWindow.setTabOrder(self.checkBox, self.textEditTerminal)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "Serial Commander", None))
@@ -207,6 +209,7 @@ class Ui_MainWindow(object):
         self.groupBoxRepetir.setTitle(_translate("MainWindow", "Opciones", None))
         self.labelPeriod.setText(_translate("MainWindow", "Periodo", None))
         self.checkBox.setText(_translate("MainWindow", "Modo continuo", None))
+        self.spinBoxPeriod.setSuffix(_translate("MainWindow", " [s]", None))
         self.checkBoxTimestamp.setText(_translate("MainWindow", "Agregar marca de tiempo", None))
         self.groupBoxCommand.setTitle(_translate("MainWindow", "Lista de comandos", None))
         self.checkBoxLF.setText(_translate("MainWindow", "LF", None))
