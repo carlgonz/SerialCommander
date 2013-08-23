@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'forms/Console.ui'
 #
-# Created: Thu Aug 22 12:52:32 2013
+# Created: Fri Aug 23 01:53:11 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         self.textEditTerminal.setLineWrapMode(QtGui.QTextEdit.NoWrap)
         self.textEditTerminal.setLineWrapColumnOrWidth(0)
         self.textEditTerminal.setReadOnly(True)
-        self.textEditTerminal.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        self.textEditTerminal.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByMouse)
         self.textEditTerminal.setObjectName(_fromUtf8("textEditTerminal"))
         self.gridLayout.addWidget(self.textEditTerminal, 4, 2, 1, 5)
         MainWindow.setCentralWidget(self.centralwidget)

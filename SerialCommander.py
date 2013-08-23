@@ -145,6 +145,11 @@ class SerialCommander(QtGui.QMainWindow):
         
         text = text.replace('\r','')
         
+        #Mover el cursor al final de documento
+        c =  self.ventana.textEditTerminal.textCursor()
+        c.movePosition(QTextCursor.End)
+        self.ventana.textEditTerminal.setTextCursor(c)
+        
         if self.timestamp:
             #Modo Timestamp, busca nueva linea para agregar timestamp
             if self.put_timestamp:
@@ -168,12 +173,7 @@ class SerialCommander(QtGui.QMainWindow):
         else:
             #Modo normal, solo escribir todo por consola
             self.ventana.textEditTerminal.insertPlainText(text)
-        
-        #Mover el cursor al final de documento
-        c =  self.ventana.textEditTerminal.textCursor()
-        c.movePosition(QTextCursor.End)
-        self.ventana.textEditTerminal.setTextCursor(c)
-        
+                    
     def command_clicked(self,item):
         '''
         Mueve un comando de la lista, a la salida de texto
