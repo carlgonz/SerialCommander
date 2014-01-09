@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: latin-1 -*-
 
 #/*                          SERIAL COMMANDER
@@ -20,12 +21,8 @@
 #*/
 
 import sys
-import threading
-import time
 import datetime
-import serial
-from serial.tools.list_ports import comports as listports
-from serial.tools.list_ports import grep as listports_grep
+import json
 
 from PyQt4.Qt import *
 from PyQt4 import QtGui
@@ -34,121 +31,112 @@ from PyQt4 import QtCore
 from forms.SerialCommander_UI import Ui_MainWindow
 from forms.EditCommandDialog_UI import Ui_DialogEditCommandList
 
+from client import Client
+
+
 class SerialCommander(QtGui.QMainWindow):
-    ''' 
-    Clase principal, aca se crea y configura la ventana. Tambien contiene
-    los slots y conexiones con otras señales
-    '''
-    #Señales
-    _new_char = pyqtSignal(type("")) #Se lee un nuevo char
+    """
+    Main class, creates and configures main window. Also sets signals and
+    slots.
+    """
+    #Se�ales
+    _new_char = pyqtSignal(type(""))  # New char signal
     
     def __init__(self):
-        '''
-        Se inicializan la ventana llamando al metodo setupUi y se realizan
-        las conexiones señal-slots
-        '''
-        
         QtGui.QMainWindow.__init__(self)
-        
-        #Variables de instancia
-        self.SerialComm = serial.Serial()
+
+        #Instance variables
+        self.client = None
         self.alive = False
         self.receiver_thread = None
-        self.commands_file = "config/cmd_list.lst"
-        self.commands_list = []
         self.history = []
         self.history_cnt = 0
         self.timestamp = False
         self.put_timestamp = True
+
+        #Load config
+        try:
+            config_file = open("config/config.json", 'r')
+            self.config = json.load(config_file)
+            config_file.close()
+        except IOError:
+            self.config = {}
+
+        self.commands_list = self.config.get("commands", [])
                 
-        #Configurar ventana
-        self.ventana = Ui_MainWindow()
-        self.ventana.setupUi(self)
+        #Set GUI
+        self.window = Ui_MainWindow()
+        self.window.setupUi(self)
         self.setup_comm()
         self.setup_send()
         self.setup_actions()
         
     def setup_comm(self):
-        '''
-        Configura el combo-box conexiones completando puertos
-        y baudrates disponibles
-        '''
-        
-        #Conexiones
-        self.ventana.pushButtonOpenPort.clicked.connect(self.open_port)
-        self.ventana.pushButtonClosePort.clicked.connect(self.close_port)
-        
-        #Se agregan los puertos disponibles
-        comm_ports = listports()
-        comm_ports.reverse()
-        for port in comm_ports:
-            port_name = port[0]
-            self.ventana.comboBoxPorts.addItem(port_name)
-        
-        #Se agregan los baudrates disponibles
-        baudrates = str(serial.Serial.BAUDRATES)[1:-1].split(',')
-        self.ventana.comboBoxBaudrate.addItems(baudrates)
-        
+        """
+        Sets connections combobox.
+        """
+        #Connections
+        self.window.pushButtonOpenPort.clicked.connect(self.open_connection)
+        self.window.pushButtonClosePort.clicked.connect(self.close_connection)
+
+        #Hosts
+        available_hosts = self.config.get("hosts", ["", ])
+        self.window.lineEditURL.setText(available_hosts[0])
+
+        #Ports
+        available_ports = self.config.get("ports", ["", ])
+        available_ports.reverse()
+        self.window.comboBoxPortRecv.addItems(available_ports)
+        self.window.comboBoxPortSend.addItems(available_ports)
+
     def setup_send(self):
-        '''
-        Configura la ventana de seleccion y envio de comandos
-        '''
-        #Leer el archivo con la lista de comandos disponibles
-        try:
-            cmd_file = open(self.commands_file,'r')
-            self.commands_list = cmd_file.readlines()
-            cmd_file.close()
-        except:
-            cmd_file = open(self.commands_file,'w')
-            cmd_file.close()
-       
-        #Agregar los comandos a la lista
-        for i in range(len(self.commands_list)):
-            self.commands_list[i] = self.commands_list[i][:-1]
-            
-        self.ventana.listWidgetCommand.addItems(self.commands_list)
+        """
+        Config cmd send and selection window
+        """
+        #Add command list
+        self.window.listWidgetCommand.addItems(self.commands_list)
         
         #Conexiones
-        self.ventana.listWidgetCommand.itemDoubleClicked.connect(self.command_clicked)
-        self.ventana.pushButtonSend.clicked.connect(self.send_msg)
-        self.ventana.checkBoxTimestamp.toggled.connect(self.timestamp_toggle)
+        self.window.listWidgetCommand.itemDoubleClicked.connect(self.command_clicked)
+        self.window.pushButtonSend.clicked.connect(self.send_msg)
+        self.window.checkBoxTimestamp.toggled.connect(self.timestamp_toggle)
     
     def timestamp_toggle(self, value):
-        '''
+        """
         Slot que intercambia entre agregar o no la marca de tiempo
-        '''
+        """
         self.timestamp = value
     
     def setup_actions(self):
-        '''
+        """
         Configura los menus de la barra de herramientas
-        '''
-        self.ventana.actionGuardar.triggered.connect(self.save_log)
-        self.ventana.actionAgregar_comando.triggered.connect(self.add_cmd)
-        self._new_char.connect(self.write_terminal)
+        """
+        self.window.actionGuardar.triggered.connect(self.save_log)
+        self.window.actionAgregar_comando.triggered.connect(self.add_cmd)
+        # self.client.new_message.connect(self.write_terminal)
         
     def add_cmd(self):
-        '''
+        """
         Edita la lista de comandos
-        '''
+        """
         dialog = EditCommandDialog(self,self.commands_list)
         self.commands_list = dialog.run_tool()
         
-        self.ventana.listWidgetCommand.clear()
-        self.ventana.listWidgetCommand.addItems(self.commands_list)
+        self.window.listWidgetCommand.clear()
+        self.window.listWidgetCommand.addItems(self.commands_list)
     
     def write_terminal(self, text):
-        '''
+        """
         Escribe el texto en el widget de lectura, configura el
         cursor hasta el final de cocumento y agrega marca de tiempo
-        '''
+        """
         
-        text = text.replace('\r','')
+        text = text.replace('\r', '')
         
-        #Mover el cursor al final de documento
-        c =  self.ventana.textEditTerminal.textCursor()
+        #Moves cursor to end
+        c = self.window.textEditTerminal.textCursor()
         c.movePosition(QTextCursor.End)
-        self.ventana.textEditTerminal.setTextCursor(c)
+        self.window.textEditTerminal.setTextCursor(c)
         
         if self.timestamp:
             #Modo Timestamp, busca nueva linea para agregar timestamp
@@ -156,13 +144,13 @@ class SerialCommander(QtGui.QMainWindow):
                 #Agregar la marca de tiempo si corresponde
                 ts = datetime.datetime.now().isoformat(' ')
                 ts = '\n[{0}] '.format(ts)
-                self.ventana.textEditTerminal.insertPlainText(ts)
+                self.window.textEditTerminal.insertPlainText(ts)
                 self.put_timestamp = False
             
             #Buscar si hay nueva linea para agregar marca despues
-            lines = unicode(text).split('\n',1)
+            lines = text.split('\n',1)
             text = lines[0]
-            self.ventana.textEditTerminal.insertPlainText(text)
+            self.window.textEditTerminal.insertPlainText(text)
             
             #Seguir procesando el resto de la linea
             if len(lines) > 1:
@@ -171,110 +159,79 @@ class SerialCommander(QtGui.QMainWindow):
                     self.write_terminal(lines[1])
                     
         else:
-            #Modo normal, solo escribir todo por consola
-            self.ventana.textEditTerminal.insertPlainText(text)
+            #Normal mode, just write text in terminal
+            self.window.textEditTerminal.insertPlainText(text)
                     
     def command_clicked(self,item):
-        '''
+        """
         Mueve un comando de la lista, a la salida de texto
-        '''
-        self.ventana.lineEditSend.setText(item.text())
+        """
+        self.window.lineEditSend.setText(item.text())
         
-    def open_port(self):
-        '''
-        Abre el puerto serial indicado en la GUI
-        '''
-        self.ventana.pushButtonClosePort.setEnabled(True)
-        self.ventana.pushButtonOpenPort.setEnabled(False)
-        self.ventana.pushButtonSend.setEnabled(True)
-        
-        puerto   = self.ventana.comboBoxPorts.currentText()
-        baudrate = self.ventana.comboBoxBaudrate.currentText()
-        
-        self.SerialComm.port = str(puerto)
-        self.SerialComm.baudrate = int(baudrate)
-        self.SerialComm.timeout = 0.1 #[s]
-        self.SerialComm.interCharTimeout = 0.01 #[s]
-        
+    def open_connection(self):
+        """
+        Opens connection with server indicated in GUI
+        """
+        self.window.pushButtonClosePort.setEnabled(True)
+        self.window.pushButtonOpenPort.setEnabled(False)
+        self.window.pushButtonSend.setEnabled(True)
+
+        url_server = self.window.lineEditURL.text()
+        recv_port = self.window.comboBoxPortRecv.currentText()
+        send_port = self.window.comboBoxPortSend.currentText()
+
         try:
-            self.SerialComm.open()
+            self.client = Client(url_server, send_port, recv_port)
+            self.client.new_message.connect(self.write_terminal)
             self.alive = True
-            self.receiver_thread = threading.Thread(target=self.reader)
-            self.receiver_thread.setDaemon(True)
-            self.receiver_thread.start()
-        except Exception, e:
+        except Exception as e:
             QMessageBox.critical(self, 'Error', 'Error al abrir el puerto serial\n'+str(e))
-            self.close_port()
-            
-        print self.SerialComm
+            self.close_connection()
         
-        
-    def close_port(self):
-        '''
-        Cierra la comunicacion serial actual
-        '''
-        self.ventana.pushButtonClosePort.setEnabled(False)
-        self.ventana.pushButtonOpenPort.setEnabled(True)
-        #self.ventana.pushButtonSend.setEnabled(False)
+    def close_connection(self):
+        """
+        Close connections
+        """
+        self.window.pushButtonClosePort.setEnabled(False)
+        self.window.pushButtonOpenPort.setEnabled(True)
+        self.window.pushButtonSend.setEnabled(False)
         self.alive = False
-        self.receiver_thread.join()
-        self.SerialComm.close()
-    
+        self.client = None
+
     def send_msg(self):
-        '''
-        Envia la linea escrita por el puerto serial
-        '''
-        msg = str(self.ventana.lineEditSend.text())
+        """
+        Send written message to server
+        """
+        msg = str(self.window.lineEditSend.text())
         self.addHistory(msg)
         
         #Agregar LF y/o CR
-        if(self.ventana.checkBoxLF.isChecked()):
-            msg +='\n'
-        if(self.ventana.checkBoxCR.isChecked()):
-            msg +='\r'
+        if self.window.checkBoxLF.isChecked():
+            msg += '\n'
+        if self.window.checkBoxCR.isChecked():
+            msg += '\r'
         
-        self.SerialComm.write(unicode(msg))
-        self.ventana.lineEditSend.clear()
+        self.client.send(msg)
+        self.window.lineEditSend.clear()
         self.history_cnt = 0
         
     def save_log(self):
-        '''
-        Guarda el contenido de la ventana de log a un archivo
-        '''
-        #Ventana crear un archivo
+        """
+        Saves terminal content to file
+        """
         doc_file = QFileDialog.getSaveFileName(self, "Guardar archivo", QDir.currentPath(), "Archivos de texto (*.txt);;All files (*.*)")
         doc_file = str(doc_file)
-        document = self.ventana.textEditTerminal.document()
+        document = self.window.textEditTerminal.document()
         m_write = QTextDocumentWriter()
         m_write.setFileName(doc_file)
         m_write.setFormat("txt")
         m_write.write(document)
-        
-    def reader(self):
-        '''
-        Lee en un thread los datos seriales y los muestra en pantalla
-        '''
-        while self.alive:
-            try:
-                to_read = self.SerialComm.inWaiting()
-                if(to_read):
-                    data = unicode(self.SerialComm.read(to_read))
-                    if len(data) and (not data == '\r'):
-                        self._new_char.emit(data)
-            
-            except UnicodeDecodeError, e:
-                #print e
-                pass
-                    
-            except serial.SerialException, e:
-                self.alive = False
-                raise
             
     def addHistory(self, line):
-        '''
+        """
         Agrega una nueva linea al historial. Elimina entradas antiguas si supera
         cierta cantidad de mensajes.
-        '''
+        """
         if len(self.history) > 100:
             self.history.pop()
         
@@ -285,51 +242,51 @@ class SerialCommander(QtGui.QMainWindow):
             self.history.append(line)
             
     def getHistory(self, index):
-        '''
+        """
         Retorna el elemendo numero index del historial
-        '''
+        """
         if index > 0 and index <= len(self.history):
             return self.history[-index]
         else:
             return ''
     
     def historySend(self):
-        '''
+        """
         Agrega una linea del historial para ser enviada
-        '''
+        """
         if self.history_cnt >= 0:
             if self.history_cnt > len(self.history):
                 self.history_cnt = len(self.history)
                 
             text = self.getHistory(self.history_cnt)
-            self.ventana.lineEditSend.setText(text)
+            self.window.lineEditSend.setText(text)
         else:
             self.history_cnt = 0                
             
     def closeEvent(self, event):
-        '''
+        """
         Cierra la aplicacion correctamente. Cerrar los puertos, detener thread
         y guardar la lista de comandos creada
-        '''
+        """
         if self.alive:
-            self.close_port()
-        file_cmd = open(self.commands_file,'w')
-        for line in self.commands_list:
-            file_cmd.write(line+'\n')
-        file_cmd.close()
+            self.close_connection()
+        # file_cmd = open(self.commands_file, 'w')
+        # for line in self.commands_list:
+        #     file_cmd.write(line+'\n')
+        # file_cmd.close()
         event.accept()
         
     def keyPressEvent(self, event):
-        '''
+        """
         Maneja eventos asociados a teclas presionadas
-        '''
+        """
         if event.key() == QtCore.Qt.Key_Up:
-            if self.ventana.lineEditSend.hasFocus():
+            if self.window.lineEditSend.hasFocus():
                 self.history_cnt+=1
                 self.historySend()
         
         if event.key() == QtCore.Qt.Key_Down:
-            if self.ventana.lineEditSend.hasFocus():
+            if self.window.lineEditSend.hasFocus():
                 self.history_cnt-=1
                 self.historySend()
             
@@ -337,9 +294,9 @@ class SerialCommander(QtGui.QMainWindow):
         
             
 class EditCommandDialog(QtGui.QDialog):
-    '''
+    """
     Herramienta para edicion de comandos
-    '''
+    """
     def __init__(self,parent=None,cmd_list=[]):
         
         QtGui.QDialog.__init__(self,parent)
@@ -355,10 +312,10 @@ class EditCommandDialog(QtGui.QDialog):
         self.ventana.pushButtonAdd.clicked.connect(self.add_item)
         
     def run_tool(self):
-        '''
+        """
         Abre el dialogo para que el usuario la lista. Al cerrar, recupera
         los cambios y retorna la nueva lista
-        '''
+        """
         ret = super(EditCommandDialog, self).exec_()
         
         if(ret):
@@ -370,9 +327,9 @@ class EditCommandDialog(QtGui.QDialog):
         return self.cmd_list
     
     def delete_item(self):
-        '''
+        """
         Borra los item seleccionados
-        '''
+        """
         for item in self.ventana.listWidgetCommand.selectedItems():
             row = self.ventana.listWidgetCommand.row(item)
             witem = item = self.ventana.listWidgetCommand.takeItem(row)
@@ -380,9 +337,9 @@ class EditCommandDialog(QtGui.QDialog):
             
         
     def add_item(self):
-        '''
+        """
         Agrega un nuevo item 
-        '''
+        """
         cmd = self.ventana.lineEditAdd.text()
         item = self.ventana.listWidgetCommand.addItem(cmd)
 

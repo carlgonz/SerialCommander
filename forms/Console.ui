@@ -56,31 +56,31 @@
            <string>Conexión</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="1" column="0">
-            <widget class="QLabel" name="labelBaudrate">
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelPortSend">
              <property name="text">
-              <string>Tasa de datos</string>
+              <string>Puerto escritura</string>
              </property>
              <property name="buddy">
-              <cstring>comboBoxBaudrate</cstring>
+              <cstring>comboBoxPortSend</cstring>
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QPushButton" name="pushButtonOpenPort">
              <property name="text">
               <string>Abrir</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="comboBoxPorts">
+           <item row="1" column="1">
+            <widget class="QComboBox" name="comboBoxPortRecv">
              <property name="editable">
               <bool>true</bool>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="3" column="1">
             <widget class="QPushButton" name="pushButtonClosePort">
              <property name="enabled">
               <bool>false</bool>
@@ -90,22 +90,32 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="labePort">
+           <item row="1" column="0">
+            <widget class="QLabel" name="labePortRecv">
              <property name="text">
-              <string>Puerto</string>
+              <string>Puerto lectura</string>
              </property>
              <property name="buddy">
-              <cstring>comboBoxPorts</cstring>
+              <cstring>comboBoxPortRecv</cstring>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="comboBoxBaudrate">
+           <item row="2" column="1">
+            <widget class="QComboBox" name="comboBoxPortSend">
              <property name="editable">
               <bool>true</bool>
              </property>
             </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelURL">
+             <property name="text">
+              <string>URL Servidor</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditURL"/>
            </item>
           </layout>
          </widget>
@@ -262,7 +272,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>26</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
@@ -341,8 +351,8 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>comboBoxPorts</tabstop>
-  <tabstop>comboBoxBaudrate</tabstop>
+  <tabstop>comboBoxPortRecv</tabstop>
+  <tabstop>comboBoxPortSend</tabstop>
   <tabstop>pushButtonOpenPort</tabstop>
   <tabstop>pushButtonClosePort</tabstop>
   <tabstop>lineEditSend</tabstop>

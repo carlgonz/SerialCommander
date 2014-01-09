@@ -1,0 +1,19 @@
+{
+"commands": [
+    "trx_send_beacon",
+    "trx_tm",
+    "exe_cmd",
+    "rtc_print"
+    ],
+"hosts": [
+    "localhost",
+    "192.168.11.69",
+    "192.168.1.0"
+    ],
+"ports": [
+    "5000",
+    "5001",
+    "5556",
+    "5557"
+    ]
+}

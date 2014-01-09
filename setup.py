@@ -1,15 +1,18 @@
- from distutils.core import setup
- 
- setup(
- name='SerialCommander',
- version='0.1.0',
- author='Carlos Gonzalez Cortes',
- author_email='carlgonz@ug.uchile.cl',
- packages=['forms', ],
- scripts=[],
- url='',
- license='GPLv3',
- description='A simple serial interface to send commands',
- long_description=open('README.md').read(),
- install_requires=[]
-     )
+from distutils.core import setup
+
+setup(
+    name='serialcommander',
+    version='0.4.1',
+    url='https://github.com/carlgonz/SerialCommander',
+    license='GPL v3',
+    author='Carlos Gonzalez',
+    author_email='contacto.carlosgonzalezqgmail.com',
+    description='A simple serial interface to send commands',
+
+    packages=['forms'],
+    py_modules=['serialcommander', "client"],
+    scripts=['serialcommander.py', ],
+    include_package_data=True,
+    install_requires=["pyzmq", ],
+    data_files=[('config', ['config/config.json']), ]
+)
