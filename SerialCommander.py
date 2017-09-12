@@ -160,7 +160,7 @@ class SerialCommander(QtGui.QMainWindow):
                 self.put_timestamp = False
             
             #Buscar si hay nueva linea para agregar marca despues
-            lines = unicode(text).split('\n',1)
+            lines = text.split('\n',1)
             text = lines[0]
             self.ventana.textEditTerminal.insertPlainText(text)
             
@@ -202,11 +202,11 @@ class SerialCommander(QtGui.QMainWindow):
             self.receiver_thread = threading.Thread(target=self.reader)
             self.receiver_thread.setDaemon(True)
             self.receiver_thread.start()
-        except Exception, e:
+        except Exception as e:
             QMessageBox.critical(self, 'Error', 'Error al abrir el puerto serial\n'+str(e))
             self.close_port()
             
-        print self.SerialComm
+        print(self.SerialComm)
         
         
     def close_port(self):
@@ -233,7 +233,7 @@ class SerialCommander(QtGui.QMainWindow):
         if(self.ventana.checkBoxCR.isChecked()):
             msg +='\r'
         
-        self.SerialComm.write(unicode(msg))
+        self.SerialComm.write(msg.encode("utf8"))
         self.ventana.lineEditSend.clear()
         self.history_cnt = 0
         
@@ -258,15 +258,15 @@ class SerialCommander(QtGui.QMainWindow):
             try:
                 to_read = self.SerialComm.inWaiting()
                 if(to_read):
-                    data = unicode(self.SerialComm.read(to_read))
+                    data = self.SerialComm.read(to_read)
                     if len(data) and (not data == '\r'):
-                        self._new_char.emit(data)
+                        self._new_char.emit(data.decode("utf8"))
             
-            except UnicodeDecodeError, e:
-                #print e
+            except UnicodeDecodeError as e:
+                #print(e)
                 pass
                     
-            except serial.SerialException, e:
+            except serial.SerialException as e:
                 self.alive = False
                 raise
             
